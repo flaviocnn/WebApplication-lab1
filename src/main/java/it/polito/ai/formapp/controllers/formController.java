@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 public class formController {
@@ -21,7 +22,7 @@ public class formController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    Users users;
+    ConcurrentHashMap<String,Users> users;
 
     @GetMapping("/login")
     public String login(@ModelAttribute("access") LoginVM vm){
@@ -39,7 +40,7 @@ public class formController {
 
         String email = vm.getEmail();
         String p = vm.getPassword();
-        if (this.users.getUsers().containsKey(email) && this.users.getUsers().get(email).equals(p)){
+        if (this.users.containsKey(email) && this.users.get(email).equals(p)){
             logger.info("Successful login");
             return "private/privatepage";
         }
@@ -69,12 +70,14 @@ public class formController {
             if (p1.equals(vm.getPassword2())){
                 logger.info("Passwords ok");
                 boolean duplicates = false;
-                for (String password:this.users.getUsers().values()) {
-                    if (password.equals(p1)) duplicates = true;
+                for (Users u:this.users.values()) {
+                    if (u.getPassword().equals(p1)) duplicates = true;
                 }
+
                 if (!duplicates){
                     logger.info("No duplicates");
-                    this.users.newUser(vm.getEmail(),vm.getPassword1());
+                    Users myu = new Users(vm.getName(),vm.getSurname(),vm.getEmail(),vm.getPassword1());
+                    this.users.put(vm.getPassword1(),myu);
                     logger.info("User inserted");
                     m.addAttribute("success",vm.getName() + " successfully registered!");
                 }

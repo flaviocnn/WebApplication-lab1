@@ -6,14 +6,18 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
-@Scope("singleton")
-@Component
 @Data
 public class Users {
+    private String name;
+    private String surname;
+    private String email;
+    private String password;
 
-    private HashMap<String,String> users = new HashMap<>();
 
-    public void newUser(String email, String password){
-        this.users.put(email,password);
+    public Users(String name, String surname, String email, String password) {
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.password = password;
     }
 }
