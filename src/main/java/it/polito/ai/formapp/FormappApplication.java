@@ -3,6 +3,7 @@ package it.polito.ai.formapp;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -10,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FormappApplication {
 
     @Bean
+    @Scope("singleton")
     ConcurrentHashMap<String,Users> users() {
         return new ConcurrentHashMap<>();
     }

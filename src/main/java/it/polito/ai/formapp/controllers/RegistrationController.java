@@ -17,36 +17,12 @@ import javax.validation.Valid;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
-public class formController {
+public class RegistrationController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     ConcurrentHashMap<String,Users> users;
-
-    @GetMapping("/login")
-    public String login(@ModelAttribute("access") LoginVM vm){
-        return "login";
-    }
-
-    @PostMapping("/login")
-    public String processLogin(@Valid @ModelAttribute("access") LoginVM vm,
-                               BindingResult res,
-                               Model m){
-        if(res.hasErrors()){
-            logger.info("Error login");
-            m.addAttribute("message","Try again");
-        }
-
-        String email = vm.getEmail();
-        String p = vm.getPassword();
-        if (this.users.containsKey(email) && this.users.get(email).equals(p)){
-            logger.info("Successful login");
-            return "private/privatepage";
-        }
-        logger.info("Wrong credentials");
-        return "login";
-    }
 
     @GetMapping("/register")
     public String register(@ModelAttribute("command") RegistrationVM vm){
@@ -77,7 +53,7 @@ public class formController {
                 if (!duplicates){
                     logger.info("No duplicates");
                     Users myu = new Users(vm.getName(),vm.getSurname(),vm.getEmail(),vm.getPassword1());
-                    this.users.put(vm.getPassword1(),myu);
+                    this.users.put(vm.getEmail(),myu);
                     logger.info("User inserted");
                     m.addAttribute("success",vm.getName() + " successfully registered!");
                 }
